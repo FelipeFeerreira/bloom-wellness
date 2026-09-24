@@ -1,0 +1,84 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum LeadKind {
+  CONTACT
+  BOOKING
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  CLOSED
+}
+
+enum JobChannel {
+  EMAIL
+  WHATSAPP
+}
+
+enum JobStatus {
+  PENDING
+  PROCESSING
+  ACCEPTED
+  BLOCKED
+  FAILED
+  REVIEW
+}
+
+model Lead {
+  id             String       @id @default(cuid())
+  requestKey     String       @unique
+  fingerprint    String
+  kind           LeadKind     @default(CONTACT)
+  name           String
+  email          String
+  phone          String?
+  message        String
+  status         LeadStatus   @default(NEW)
+  consentAt      DateTime     @default(now())
+  createdAt      DateTime     @default(now())
+  booking        Booking?
+  jobs           AutomationJob[]
+  @@index([createdAt])
+}
+
+model Booking {
+  id        String   @id @default(cuid())
+  leadId    String   @unique
+  lead      Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  service   String
+  startsAt  DateTime @unique
+  createdAt DateTime @default(now())
+}
+
+model AutomationJob {
+  id         String     @id @default(cuid())
+  leadId     String
+  lead       Lead       @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  channel    JobChannel
+  status     JobStatus  @default(PENDING)
+  attempts   Int        @default(0)
+  nextRunAt  DateTime   @default(now())
+  lockedAt   DateTime?
+  providerId String?    @unique
+  delivery   String?
+  lastError  String?
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  @@unique([leadId, channel])
+  @@index([status, nextRunAt])
+}
+
+model RateBucket {
+  key       String   @id
+  count     Int      @default(1)
+  expiresAt DateTime
+  @@index([expiresAt])
+}
