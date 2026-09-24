@@ -15,6 +15,7 @@ type Modules = {
   leads: typeof import('@/lib/leads');
   processor: typeof import('@/lib/automations/processor');
   errors: typeof import('@/lib/automations/errors');
+  demo: typeof import('@/lib/demo');
 };
 let m: Modules;
 
@@ -29,6 +30,7 @@ suite('automation queue (Postgres)', () => {
       leads: await import('@/lib/leads'),
       processor: await import('@/lib/automations/processor'),
       errors: await import('@/lib/automations/errors'),
+      demo: await import('@/lib/demo'),
     };
   });
 
@@ -167,5 +169,42 @@ suite('automation queue (Postgres)', () => {
     const rejected = results.find((r) => r.status === 'rejected') as PromiseRejectedResult;
     expect(rejected.reason).toMatchObject({ status: 409 });
     expect(await m.prisma.booking.count()).toBe(1);
+  });
+
+  it('parks both channels as BLOCKED when no credentials are configured, and the lead is kept', async () => {
+    for (const name of ['RESEND_API_KEY', 'RESEND_FROM', 'WHATSAPP_ACCESS_TOKEN', 'WHATSAPP_PHONE_NUMBER_ID', 'WHATSAPP_OWNER_NUMBER', 'WHATSAPP_GRAPH_VERSION']) {
+      vi.stubEnv(name, '');
+    }
+    const fetchMock = vi.fn();
+    vi.stubGlobal('fetch', fetchMock);
+    const lead = await m.leads.createContactLead(contact, key());
+
+    expect(await m.processor.processJobs({ leadId: lead.id })).toMatchObject({ blocked: 2, failed: 0 });
+    expect(fetchMock).not.toHaveBeenCalled();
+    const jobs = await m.prisma.automationJob.findMany({ where: { leadId: lead.id } });
+    expect(jobs.map((j) => j.status)).toEqual(['BLOCKED', 'BLOCKED']);
+    expect(await m.prisma.lead.count()).toBe(1);
+  });
+
+  it('purges demo submissions older than 24 hours with their bookings and jobs', async () => {
+    const old = await m.leads.createContactLead(contact, key());
+    let date = format(addDays(parseISO(clinicToday()), 3), 'yyyy-MM-dd');
+    if (weekdayOf(date) === 0) date = format(addDays(parseISO(date), 1), 'yyyy-MM-dd');
+    const booking = { service: 'massage' as const, date, time: '09:00', name: 'Old Booking', email: 'old@x.co', phone: undefined, notes: undefined, consent: true as const };
+    const oldBooking = await m.leads.createBookingLead(booking, key());
+    const fresh = await m.leads.createContactLead({ ...contact, email: 'fresh@example.com' }, key());
+
+    const dayAgo = new Date(Date.now() - m.demo.DEMO_RETENTION_MS - 60_000);
+    await m.prisma.lead.updateMany({ where: { id: { in: [old.id, oldBooking.id] } }, data: { createdAt: dayAgo } });
+    await m.prisma.booking.updateMany({ data: { createdAt: dayAgo } });
+
+    expect(await m.demo.purgeDemoData()).toEqual({ leads: 2, bookings: 0 });
+    expect((await m.prisma.lead.findMany()).map((l) => l.id)).toEqual([fresh.id]);
+    expect(await m.prisma.booking.count()).toBe(0);
+    expect(await m.prisma.automationJob.count({ where: { leadId: { not: fresh.id } } })).toBe(0);
+    expect(await m.prisma.automationJob.count()).toBe(2);
+
+    // The freed slot can be booked again.
+    await expect(m.leads.createBookingLead({ ...booking, email: 'new@x.co' }, key())).resolves.toMatchObject({ duplicate: false });
   });
 });

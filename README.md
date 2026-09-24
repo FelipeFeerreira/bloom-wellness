@@ -58,10 +58,14 @@ Without Resend or WhatsApp credentials, everything still works. Those jobs show 
 
 ## Deploying to Vercel
 
-1. Create a Postgres database (Neon, Supabase, Vercel Postgres…). Set `DATABASE_URL` (pooled) and `DIRECT_URL` (direct, used for migrations).
+1. Create a Postgres database (Neon, Supabase, Vercel Postgres…). Set `DATABASE_URL` (pooled) and `DIRECT_URL` (direct, used for migrations). The Vercel Neon integration sets `DATABASE_URL` and `DATABASE_URL_UNPOOLED` for you, and both are picked up. The build itself does not need a database.
 2. Add every variable from `.env.example` to the project settings.
 3. Run `npm run db:migrate` against production (or add it to your deploy step).
 4. `vercel.json` schedules `/api/cron/automations`, and Vercel sends `Authorization: Bearer $CRON_SECRET` automatically. The Hobby plan allows one run a day. Deliveries happen immediately after each submission anyway, and the cron is only the safety net.
+
+## Public demo mode
+
+Set `NEXT_PUBLIC_DEMO_MODE=true` to show a fixed "Demo site — fictional clinic" banner (read at build time, so redeploy after changing it). Set `DEMO_MODE=true` so the daily cron deletes submissions older than 24 hours, together with their bookings and automation jobs. That way the public calendar never fills up. Leave both off for a real clinic.
 
 ## Tests
 
@@ -86,7 +90,6 @@ src/
 prisma/                 schema + migrations
 tests/                  Vitest + RTL (tests/integration hits Postgres)
 e2e/                    Playwright
-legacy/index.html       the original single-file static version
 ```
 
 _Portfolio concept: the business, team and testimonials are fictional. Photography: Unsplash._
