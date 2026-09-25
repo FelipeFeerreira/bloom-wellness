@@ -60,7 +60,7 @@ Without Resend or WhatsApp credentials, everything still works. Those jobs show 
 
 1. Create a Postgres database (Neon, Supabase, Vercel Postgres…). Set `DATABASE_URL` (pooled) and `DIRECT_URL` (direct, used for migrations). The Vercel Neon integration sets `DATABASE_URL` and `DATABASE_URL_UNPOOLED` for you, and both are picked up. The build itself does not need a database.
 2. Add every variable from `.env.example` to the project settings.
-3. Run `npm run db:migrate` against production (or add it to your deploy step).
+3. Migrations run automatically in Vercel production builds (`scripts/migrate-on-deploy.mjs`). Preview and local builds skip them. Elsewhere, run `npm run db:migrate`.
 4. `vercel.json` schedules `/api/cron/automations`, and Vercel sends `Authorization: Bearer $CRON_SECRET` automatically. The Hobby plan allows one run a day. Deliveries happen immediately after each submission anyway, and the cron is only the safety net.
 
 ## Public demo mode
