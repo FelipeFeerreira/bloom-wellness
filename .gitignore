@@ -47,3 +47,5 @@ Saved/
 *.slnx
 .DS_Store
 Thumbs.db
+# High-resolution marketing captures (Upwork); GitHub copies live in docs/screenshots
+portfolio-assets/
