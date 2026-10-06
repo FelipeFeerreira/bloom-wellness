@@ -9,3 +9,23 @@ src/generated/
 *.tsbuildinfo
 *.log
 .vercel/
+cypress/screenshots/
+cypress/videos/
+# Game engine caches
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+[Bb]uilds/
+Binaries/
+Intermediate/
+DerivedDataCache/
+Saved/
+*.csproj
+*.sln
+*.slnx
+.DS_Store
+Thumbs.db
+# High-resolution marketing captures (Upwork); GitHub copies live in docs/screenshots
+portfolio-assets/

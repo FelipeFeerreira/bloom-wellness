@@ -2,6 +2,18 @@
 
 A full-stack website for a (fictional) wellness clinic in Austin, TX. Visitors can book real appointment slots or send a message, and every submission triggers working automations: a confirmation email to the client, a WhatsApp alert to the owner, and a CRM entry the team manages from a private dashboard.
 
+**Live demo:** https://bloom-wellnessdefinitive.vercel.app (fictional clinic; submissions are deleted after 24 hours)
+
+| Booking with live availability | Automation tracker |
+| --- | --- |
+| ![Booking form with a day selected and live time slots](docs/screenshots/booking.webp) | ![Live automation tracker showing each step's real status](docs/screenshots/live-tracker.webp) |
+
+| CRM dashboard | Mobile |
+| --- | --- |
+| ![Admin CRM with leads, bookings, delivery status and retries](docs/screenshots/admin-crm.webp) | ![Mobile booking calendar](docs/screenshots/mobile-booking.webp) |
+
+More in [docs/screenshots](docs/screenshots). Regenerate them with `ADMIN_TOKEN=… npm run screenshots` (see `scripts/screenshots.mts`).
+
 ## Stack
 
 | Layer | Tech |
@@ -60,7 +72,7 @@ Without Resend or WhatsApp credentials, everything still works. Those jobs show 
 
 1. Create a Postgres database (Neon, Supabase, Vercel Postgres…). Set `DATABASE_URL` (pooled) and `DIRECT_URL` (direct, used for migrations).
 2. Add every variable from `.env.example` to the project settings.
-3. Run `npm run db:migrate` against production (or add it to your deploy step).
+3. Migrations run automatically in Vercel production builds (`scripts/migrate-on-deploy.mjs`). Preview and local builds skip them. Elsewhere, run `npm run db:migrate`.
 4. `vercel.json` schedules `/api/cron/automations`, and Vercel sends `Authorization: Bearer $CRON_SECRET` automatically. The Hobby plan allows one run a day. Deliveries happen immediately after each submission anyway, and the cron is only the safety net.
 
 ## Tests
