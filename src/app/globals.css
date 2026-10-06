@@ -15,9 +15,6 @@
   --clay: #a36b52;
   --line: #d9ddd1;
 
-  /* Height of the demo banner; 0 unless NEXT_PUBLIC_DEMO_MODE is on. */
-  --banner-h: 0px;
-
   --radius: 0.25rem;
   --background: var(--cream);
   --foreground: var(--ink);
@@ -37,10 +34,6 @@
   --border: var(--line);
   --input: #d0d4c7;
   --ring: var(--clay);
-}
-
-:root[data-demo] {
-  --banner-h: 28px;
 }
 
 @theme inline {
@@ -88,10 +81,9 @@
   }
   html {
     scroll-behavior: smooth;
-    scroll-padding-top: calc(90px + var(--banner-h));
+    scroll-padding-top: 90px;
   }
   body {
-    padding-top: var(--banner-h);
     @apply bg-background text-foreground font-sans text-[15px] leading-[1.7] antialiased;
   }
   h1,

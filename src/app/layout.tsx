@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from 'next';
 import { DM_Sans, Fraunces } from 'next/font/google';
-import { DemoBanner, isDemoMode } from '@/components/site/demo-banner';
 import { Providers } from './providers';
 import './globals.css';
 
@@ -23,9 +22,8 @@ export const viewport: Viewport = { themeColor: '#344b3e' };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${sans.variable} ${serif.variable}`} data-demo={isDemoMode() || undefined}>
+    <html lang="en" className={`${sans.variable} ${serif.variable}`}>
       <body>
-        <DemoBanner />
         <Providers>{children}</Providers>
       </body>
     </html>

@@ -24,7 +24,7 @@ export function SiteHeader() {
   }, [open]);
 
   return (
-    <header className="sticky top-[var(--banner-h)] z-40 border-b border-transparent bg-cream/90 backdrop-blur supports-[backdrop-filter]:bg-cream/80">
+    <header className="sticky top-0 z-40 border-b border-transparent bg-cream/90 backdrop-blur supports-[backdrop-filter]:bg-cream/80">
       <div className="wrap relative flex h-[76px] items-center justify-between gap-6 md:h-[88px]">
         <a href="#" className="flex items-center gap-3 text-forest" aria-label="Bloom Wellness Clinic home">
           <BloomMark className="h-11 w-9" />
