@@ -102,3 +102,9 @@ legacy/index.html       the original single-file static version
 ```
 
 _Portfolio concept: the business, team and testimonials are fictional. Photography: Unsplash._
+
+---
+
+## License
+
+MIT - see [LICENSE](LICENSE). You may use, modify and redistribute this code with attribution.
