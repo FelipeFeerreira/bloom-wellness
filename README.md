@@ -14,6 +14,13 @@ A full-stack website for a (fictional) wellness clinic in Austin, TX. Visitors c
 
 More in [docs/screenshots](docs/screenshots). Regenerate them with `ADMIN_TOKEN=… npm run screenshots` (see `scripts/screenshots.mts`).
 
+| | |
+|:--|:--|
+| **Live demo** | [bloom-wellnessdefinitive.vercel.app](https://bloom-wellnessdefinitive.vercel.app) |
+| **Screenshots** | [docs/screenshots](docs/screenshots) |
+| **Stack** | Next.js · React · TypeScript · PostgreSQL · Prisma · TanStack Query · Zod |
+| **License** | MIT — [LICENSE](LICENSE) |
+
 ## Stack
 
 | Layer | Tech |
@@ -104,6 +111,12 @@ legacy/index.html       the original single-file static version
 _Portfolio concept: the business, team and testimonials are fictional. Photography: Unsplash._
 
 ---
+
+## What I would do next
+
+- Replace the simulated notification steps with a real provider (e-mail + WhatsApp) and show delivery receipts.
+- Add staff authentication and role separation to the admin CRM before handling real patient data.
+- Add an end-to-end test that books a slot, confirms it and verifies the reminder job.
 
 ## License
 
