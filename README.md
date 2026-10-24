@@ -18,6 +18,7 @@ More in [docs/screenshots](docs/screenshots). Regenerate them with `ADMIN_TOKEN=
 |:--|:--|
 | **Live demo** | [bloom-wellnessdefinitive.vercel.app](https://bloom-wellnessdefinitive.vercel.app) |
 | **Screenshots** | [docs/screenshots](docs/screenshots) |
+| **CI** | [![CI](https://github.com/FelipeFeerreira/bloom-wellness/actions/workflows/ci.yml/badge.svg)](https://github.com/FelipeFeerreira/bloom-wellness/actions/workflows/ci.yml) |
 | **Stack** | Next.js · React · TypeScript · PostgreSQL · Prisma · TanStack Query · Zod |
 | **License** | MIT — [LICENSE](LICENSE) |
 
